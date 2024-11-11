@@ -1,0 +1,40 @@
+from collections import deque
+
+def get_successors(state):
+    position, rooms = state
+    successors = []
+    actions = {
+        'UP': (position - 1) if position in (2, 3) else position,
+        'DOWN': (position + 1) if position in (0, 1) else position,
+        'LEFT': (position - 1) if position % 2 == 1 else position,
+        'RIGHT': (position + 1) if position % 2 == 0 else position,
+        'SUCK': position
+    }
+    for action, new_position in actions.items():
+        new_rooms = rooms[:]
+        if action == 'SUCK':
+            new_rooms[position] = 0
+        successors.append((action, (new_position, new_rooms)))
+    return successors
+
+def is_goal(state):
+    return all(room == 0 for room in state[1])
+
+def vacuum_cleaner(start_position, initial_rooms):
+    initial_state = (start_position, initial_rooms)
+    queue = deque([(initial_state, [])])
+    visited = set()
+    visited.add(initial_state)
+    while queue:
+        (position, rooms), path = queue.popleft()
+        if is_goal((position, rooms)):
+            return path
+        for action, successor in get_successors((position, rooms)):
+            if successor not in visited:
+                visited.add(successor)
+                queue.append((successor, path + [action]))
+
+start_position = 0
+initial_rooms = [1, 1, 1, 1]
+solution = vacuum_cleaner(start_position, initial_rooms)
+print(solution)
