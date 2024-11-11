@@ -1,0 +1,41 @@
+from collections import deque
+
+def is_valid(state):
+    m_left, c_left, boat = state
+    m_right, c_right = 3 - m_left, 3 - c_left
+    if m_left < 0 or c_left < 0 or m_right < 0 or c_right < 0:
+        return False
+    if (m_left > 0 and m_left < c_left) or (m_right > 0 and m_right < c_right):
+        return False
+    return True
+
+def get_successors(state):
+    m_left, c_left, boat = state
+    moves = [(1, 0), (0, 1), (1, 1), (2, 0), (0, 2)]
+    successors = []
+    for m, c in moves:
+        if boat == 1:
+            new_state = (m_left - m, c_left - c, 0)
+        else:
+            new_state = (m_left + m, c_left + c, 1)
+        if is_valid(new_state):
+            successors.append(new_state)
+    return successors
+
+def solve_missionaries_cannibals():
+    initial_state = (3, 3, 1)
+    goal_state = (0, 0, 0)
+    queue = deque([(initial_state, [])])
+    visited = set([initial_state])
+    while queue:
+        state, path = queue.popleft()
+        if state == goal_state:
+            return path + [state]
+        for successor in get_successors(state):
+            if successor not in visited:
+                visited.add(successor)
+                queue.append((successor, path + [state]))
+
+solution = solve_missionaries_cannibals()
+for step in solution:
+    print(step)
