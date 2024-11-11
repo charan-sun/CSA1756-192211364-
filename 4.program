@@ -1,0 +1,25 @@
+import itertools
+def get_number(mapping, word):
+    return int(''.join(str(mapping[letter]) for letter in word))
+
+def solve_cryptarithmetic():
+    letters = 'SENDMORY'
+    for perm in itertools.permutations(range(10), len(letters)):
+        mapping = dict(zip(letters, perm))
+        
+        # Check if 'M' is zero, as it cannot be zero (MONEY > 10000)
+        if mapping['M'] == 0:
+            continue
+        send = get_number(mapping, 'SEND')
+        more = get_number(mapping, 'MORE')
+        money = get_number(mapping, 'MONEY')
+        
+        # Check if the equation SEND + MORE = MONEY holds
+        if send + more == money:
+            print("Solution found:")
+            print(f"SEND = {send}, MORE = {more}, MONEY = {money}")
+            print(f"Mapping: {mapping}")
+            return mapping
+    print("No solution found.")
+# Run the solver
+solve_cryptarithmetic()
