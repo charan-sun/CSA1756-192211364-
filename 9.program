@@ -1,0 +1,32 @@
+from itertools import permutations
+
+def calculate_route_distance(route, distances):
+    total_distance = 0
+    for i in range(len(route) - 1):
+        total_distance += distances[route[i]][route[i + 1]]
+    total_distance += distances[route[-1]][route[0]]
+    return total_distance
+
+def tsp_brute_force(distances):
+    cities = list(range(len(distances)))
+    shortest_route = None
+    min_distance = float('inf')
+    
+    for route in permutations(cities):
+        current_distance = calculate_route_distance(route, distances)
+        if current_distance < min_distance:
+            min_distance = current_distance
+            shortest_route = route
+    
+    return shortest_route, min_distance
+
+# Example usage
+distances = [
+    [0, 10, 15, 20],
+    [10, 0, 35, 25],
+    [15, 35, 0, 30],
+    [20, 25, 30, 0]
+]
+route, distance = tsp_brute_force(distances)
+print("Shortest route:", route)
+print("Minimum distance:", distance)
